@@ -1,0 +1,42 @@
+title: SABRE Persistence Detection for mock_lateral_movement.bin
+id: 41418168-3e4e-5440-a705-8e84e69a0b1c
+status: experimental
+description: Automatically generated Sigma rule from SABRE static heuristic analysis of mock_lateral_movement.bin (SHA256: 4c193b1985c32e2ada9b9945b502b79ae2d26063b74786e8d63f12c2ef596a4a).
+author: SABRE (Static Artifact & Binary Rule Engine)
+date: 2026-11-08
+logsource:
+  category: registry_event
+  product: windows
+detection:
+  selection:
+    TargetObject|contains:
+      - 'Software\Microsoft\Windows\CurrentVersion\Run\MockLateralPivotAgent'
+      - 'HKLM\SYSTEM\CurrentControlSet\Control\Terminal Server\fDenyTSConnections'
+      - 'HKLM\SYSTEM\CurrentControlSet\Control\Lsa\DisableRestrictedAdmin'
+      - 'HKLM\SYSTEM\CurrentControlSet\Services\PSEXESVC\ImagePath'
+  condition: selection
+falsepositives:
+  - Authorized software installations
+level: high
+---
+title: SABRE Suspicious Binary Execution - mock_lateral_movement.bin
+id: e95f0556-7f3b-5674-8e04-439ff29d47b1
+status: experimental
+description: Detects execution of binary mock_lateral_movement.bin via cryptographic hashes extracted by SABRE. Observed Mutex(es): Global\MockPsExecLateralMutex, BaseNamedObjects\MockWmiExecPipeMutex.
+author: SABRE (Static Artifact & Binary Rule Engine)
+date: 2026-11-08
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_hashes:
+    Hashes|contains:
+      - 'SHA256=4c193b1985c32e2ada9b9945b502b79ae2d26063b74786e8d63f12c2ef596a4a'
+      - 'MD5=36772e4648d2409456c6a44068dd989c'
+      - 'SHA1=09f29795b00cc64527d5236374ecdb7a5042f89e'
+  selection_filename:
+    OriginalFileName: 'mock_lateral_movement.bin'
+  condition: selection_hashes or selection_filename
+falsepositives:
+  - Unlikely for cryptographic hash match
+level: critical

@@ -1,0 +1,68 @@
+{
+    "rfc_title": "SABRE Emergency Mitigation: Containment for Binary - mock_malleable_c2_implant.dll",
+    "category": "Security Incident Response",
+    "priority": "P1 - Critical",
+    "justification": "SABRE static analysis signature extraction on mock_malleable_c2_implant.dll (SHA256: 8a04e242fdf33ee6..., Type: Windows PE32+ DLL, Entropy: 3.9254) identified 10 network indicator(s) and 4 host artifact(s).",
+    "binary_metadata": {
+        "filename": "mock_malleable_c2_implant.dll",
+        "sha256": "8a04e242fdf33ee6c14b5627ca111c050c77b07b4990f880e258d306f63b9eb2",
+        "sha1": "26a895e768862cdcf52e839f359085f7580c3b6c",
+        "md5": "6b3b616f68c30762d5dbf6395e096262",
+        "size_bytes": 1195,
+        "file_type": "Windows PE32+ DLL",
+        "entropy": 3.9254,
+        "entropy_assessment": "Low (<6.0) - Text, Script, or Unpacked Data",
+        "pe_info": {
+            "architecture": "x64 (AMD64)",
+            "compile_timestamp_utc": "2024-11-07T17:20:00+00:00",
+            "is_dll": true,
+            "sections": [
+                {
+                    "name": ".rdata",
+                    "virtual_size": 827,
+                    "raw_size": 827,
+                    "entropy": 4.7804
+                }
+            ]
+        }
+    },
+    "requested_actions": [
+        {
+            "action_type": "EDR / Endpoint Control",
+            "directive": "Block binary execution by cryptographic hash across all enterprise endpoints",
+            "indicators": [
+                "SHA256:8a04e242fdf33ee6c14b5627ca111c050c77b07b4990f880e258d306f63b9eb2",
+                "SHA1:26a895e768862cdcf52e839f359085f7580c3b6c",
+                "MD5:6b3b616f68c30762d5dbf6395e096262"
+            ]
+        },
+        {
+            "action_type": "Network Firewalls / Proxy / DNS",
+            "directive": "Block egress traffic and sinkhole DNS requests to identified C2 infrastructure",
+            "indicators": [
+                "198.51.100.10",
+                "198.51.100.11",
+                "203.0.113.50",
+                "203.0.113.51",
+                "cdn-fronting.example.org",
+                "dead-drop.test",
+                "fallback-dns-c2.example.net",
+                "primary-c2.example.com",
+                "https://cdn-fronting.example.org/api/v3/telemetry.php?beacon=active;jitter=30",
+                "https://primary-c2.example.com:443/jquery-3.6.0.min.js?session=98a7f6&arch=x64"
+            ]
+        },
+        {
+            "action_type": "Host Remediation & Threat Hunting",
+            "directive": "Inspect endpoints for registry persistence keys (2 identified); Scan active handles for behavioral mutex indicators (2 identified)",
+            "registry_keys": [
+                "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\MockC2HeartbeatDll",
+                "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyServer"
+            ],
+            "mutexes": [
+                "Global\\MockMalleableC2Beacon_Mutex",
+                "Local\\MockDnsTunnelSyncMutex"
+            ]
+        }
+    ]
+}

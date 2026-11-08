@@ -1,0 +1,61 @@
+{
+    "rfc_title": "SABRE Emergency Mitigation: Containment for Binary - mock_beacon_x64.bin",
+    "category": "Security Incident Response",
+    "priority": "P1 - Critical",
+    "justification": "SABRE static analysis signature extraction on mock_beacon_x64.bin (SHA256: 2f83df153e30a2f4..., Type: Windows PE32+ Executable, Entropy: 3.5817) identified 5 network indicator(s) and 2 host artifact(s).",
+    "binary_metadata": {
+        "filename": "mock_beacon_x64.bin",
+        "sha256": "2f83df153e30a2f4c5f194bd090584ca4aee4a70b31cde1d0e963a307735d1d3",
+        "sha1": "7b4e2f6b687eccbd599d8bc70972c4aec66796b1",
+        "md5": "5851318856d2e323e1271bc8cf891587",
+        "size_bytes": 841,
+        "file_type": "Windows PE32+ Executable",
+        "entropy": 3.5817,
+        "entropy_assessment": "Low (<6.0) - Text, Script, or Unpacked Data",
+        "pe_info": {
+            "architecture": "x64 (AMD64)",
+            "compile_timestamp_utc": "2024-10-27T03:33:20+00:00",
+            "is_dll": false,
+            "sections": [
+                {
+                    "name": ".rdata",
+                    "virtual_size": 473,
+                    "raw_size": 473,
+                    "entropy": 4.9086
+                }
+            ]
+        }
+    },
+    "requested_actions": [
+        {
+            "action_type": "EDR / Endpoint Control",
+            "directive": "Block binary execution by cryptographic hash across all enterprise endpoints",
+            "indicators": [
+                "SHA256:2f83df153e30a2f4c5f194bd090584ca4aee4a70b31cde1d0e963a307735d1d3",
+                "SHA1:7b4e2f6b687eccbd599d8bc70972c4aec66796b1",
+                "MD5:5851318856d2e323e1271bc8cf891587"
+            ]
+        },
+        {
+            "action_type": "Network Firewalls / Proxy / DNS",
+            "directive": "Block egress traffic and sinkhole DNS requests to identified C2 infrastructure",
+            "indicators": [
+                "198.51.100.42",
+                "203.0.113.88",
+                "beacon-node.test",
+                "c2-telemetry.example.com",
+                "https://c2-telemetry.example.com:8443/gate.php?id=test101;mode=sync"
+            ]
+        },
+        {
+            "action_type": "Host Remediation & Threat Hunting",
+            "directive": "Inspect endpoints for registry persistence keys (1 identified); Scan active handles for behavioral mutex indicators (1 identified)",
+            "registry_keys": [
+                "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\MockTelemetrySync"
+            ],
+            "mutexes": [
+                "Global\\MockBeaconSyncMutex_01"
+            ]
+        }
+    ]
+}

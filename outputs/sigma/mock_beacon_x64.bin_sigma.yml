@@ -1,0 +1,39 @@
+title: SABRE Persistence Detection for mock_beacon_x64.bin
+id: af299fa4-3e4b-51e0-9380-19e4665430dd
+status: experimental
+description: Automatically generated Sigma rule from SABRE static heuristic analysis of mock_beacon_x64.bin (SHA256: 2f83df153e30a2f4c5f194bd090584ca4aee4a70b31cde1d0e963a307735d1d3).
+author: SABRE (Static Artifact & Binary Rule Engine)
+date: 2026-11-08
+logsource:
+  category: registry_event
+  product: windows
+detection:
+  selection:
+    TargetObject|contains:
+      - 'HKCU\Software\Microsoft\Windows\CurrentVersion\Run\MockTelemetrySync'
+  condition: selection
+falsepositives:
+  - Authorized software installations
+level: high
+---
+title: SABRE Suspicious Binary Execution - mock_beacon_x64.bin
+id: 65663b86-2bca-5b3c-8c60-3e3791fd1b43
+status: experimental
+description: Detects execution of binary mock_beacon_x64.bin via cryptographic hashes extracted by SABRE. Observed Mutex(es): Global\MockBeaconSyncMutex_01.
+author: SABRE (Static Artifact & Binary Rule Engine)
+date: 2026-11-08
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_hashes:
+    Hashes|contains:
+      - 'SHA256=2f83df153e30a2f4c5f194bd090584ca4aee4a70b31cde1d0e963a307735d1d3'
+      - 'MD5=5851318856d2e323e1271bc8cf891587'
+      - 'SHA1=7b4e2f6b687eccbd599d8bc70972c4aec66796b1'
+  selection_filename:
+    OriginalFileName: 'mock_beacon_x64.bin'
+  condition: selection_hashes or selection_filename
+falsepositives:
+  - Unlikely for cryptographic hash match
+level: critical

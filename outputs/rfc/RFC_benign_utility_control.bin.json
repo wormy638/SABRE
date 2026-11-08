@@ -1,0 +1,28 @@
+{
+    "rfc_title": "SABRE Emergency Mitigation: Containment for Binary - benign_utility_control.bin",
+    "category": "Security Incident Response",
+    "priority": "P2 - High",
+    "justification": "SABRE static analysis signature extraction on benign_utility_control.bin (SHA256: 951fb822a5664a27..., Type: Unknown / Raw Binary, Entropy: 5.2233) identified 0 network indicator(s) and 0 host artifact(s).",
+    "binary_metadata": {
+        "filename": "benign_utility_control.bin",
+        "sha256": "951fb822a5664a27821465369f4c387442c84815831018209055cb2ddb10d9ee",
+        "sha1": "1cd928a894a8c2b644f0b3e9a3bf3ec9027ce35c",
+        "md5": "bef73f063ab20a8ef28a1493748690f4",
+        "size_bytes": 187,
+        "file_type": "Unknown / Raw Binary",
+        "entropy": 5.2233,
+        "entropy_assessment": "Low (<6.0) - Text, Script, or Unpacked Data",
+        "pe_info": null
+    },
+    "requested_actions": [
+        {
+            "action_type": "EDR / Endpoint Control",
+            "directive": "Block binary execution by cryptographic hash across all enterprise endpoints",
+            "indicators": [
+                "SHA256:951fb822a5664a27821465369f4c387442c84815831018209055cb2ddb10d9ee",
+                "SHA1:1cd928a894a8c2b644f0b3e9a3bf3ec9027ce35c",
+                "MD5:bef73f063ab20a8ef28a1493748690f4"
+            ]
+        }
+    ]
+}

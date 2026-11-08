@@ -1,0 +1,59 @@
+alert http $HOME_NET any -> $EXTERNAL_NET any (
+    msg:"SABRE-CNC Suspected Static URI Indicator Match [mock_lateral_movement.bin]";
+    flow:established,to_server;
+    http.uri; content:"/admin/lateral_beacon.aspx?pivot=smb"; startswith;
+    classtype:trojan-activity;
+    reference:hashes,sha256:4c193b1985c32e2ada9b9945b502b79ae2d26063b74786e8d63f12c2ef596a4a;
+    sid:9877800; rev:1;
+)
+
+alert http $HOME_NET any -> $EXTERNAL_NET any (
+    msg:"SABRE-CNC Suspected Static URI Indicator Match [mock_lateral_movement.bin]";
+    flow:established,to_server;
+    http.uri; content:"/wsman?remote_shell=winrm_test"; startswith;
+    classtype:trojan-activity;
+    reference:hashes,sha256:4c193b1985c32e2ada9b9945b502b79ae2d26063b74786e8d63f12c2ef596a4a;
+    sid:9877801; rev:1;
+)
+
+alert dns $HOME_NET any -> any any (
+    msg:"SABRE-CNC Suspected Static DNS Query [mock_lateral_movement.bin - fileserver-pivot.lan]";
+    dns.query; content:"fileserver-pivot.lan"; nocase; endswith;
+    classtype:trojan-activity;
+    reference:hashes,sha256:4c193b1985c32e2ada9b9945b502b79ae2d26063b74786e8d63f12c2ef596a4a;
+    sid:9877802; rev:1;
+)
+
+alert tls $HOME_NET any -> $EXTERNAL_NET any (
+    msg:"SABRE-CNC Suspected Static TLS SNI [mock_lateral_movement.bin - fileserver-pivot.lan]";
+    flow:established,to_server;
+    tls.sni; content:"fileserver-pivot.lan"; nocase; endswith;
+    classtype:trojan-activity;
+    reference:hashes,sha256:4c193b1985c32e2ada9b9945b502b79ae2d26063b74786e8d63f12c2ef596a4a;
+    sid:9877803; rev:1;
+)
+
+alert dns $HOME_NET any -> any any (
+    msg:"SABRE-CNC Suspected Static DNS Query [mock_lateral_movement.bin - internal-dc01.corp]";
+    dns.query; content:"internal-dc01.corp"; nocase; endswith;
+    classtype:trojan-activity;
+    reference:hashes,sha256:4c193b1985c32e2ada9b9945b502b79ae2d26063b74786e8d63f12c2ef596a4a;
+    sid:9877804; rev:1;
+)
+
+alert tls $HOME_NET any -> $EXTERNAL_NET any (
+    msg:"SABRE-CNC Suspected Static TLS SNI [mock_lateral_movement.bin - internal-dc01.corp]";
+    flow:established,to_server;
+    tls.sni; content:"internal-dc01.corp"; nocase; endswith;
+    classtype:trojan-activity;
+    reference:hashes,sha256:4c193b1985c32e2ada9b9945b502b79ae2d26063b74786e8d63f12c2ef596a4a;
+    sid:9877805; rev:1;
+)
+
+alert ip $HOME_NET any -> [10.10.50.15,192.168.100.25,198.51.100.240] any (
+    msg:"SABRE-CNC Outbound Traffic to Extracted Static C2 IP [mock_lateral_movement.bin]";
+    flow:to_server;
+    classtype:trojan-activity;
+    reference:hashes,sha256:4c193b1985c32e2ada9b9945b502b79ae2d26063b74786e8d63f12c2ef596a4a;
+    sid:9877806; rev:1;
+)

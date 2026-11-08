@@ -1,0 +1,45 @@
+{
+    "rfc_title": "SABRE Emergency Mitigation: Containment for Binary - mock_linux_agent.elf",
+    "category": "Security Incident Response",
+    "priority": "P1 - Critical",
+    "justification": "SABRE static analysis signature extraction on mock_linux_agent.elf (SHA256: 6cacae6742551925..., Type: Linux/Unix ELF 64-bit Binary, Entropy: 4.5902) identified 3 network indicator(s) and 1 host artifact(s).",
+    "binary_metadata": {
+        "filename": "mock_linux_agent.elf",
+        "sha256": "6cacae67425519253d7ed8115176f2abfa9ce716e1a0ba8c9e290c6b8d43408e",
+        "sha1": "5c643da1f6337f2cda372d0d370388a60fe2e546",
+        "md5": "b0e42ea3a16dc10ce6832e60f6ccf024",
+        "size_bytes": 224,
+        "file_type": "Linux/Unix ELF 64-bit Binary",
+        "entropy": 4.5902,
+        "entropy_assessment": "Low (<6.0) - Text, Script, or Unpacked Data",
+        "pe_info": null
+    },
+    "requested_actions": [
+        {
+            "action_type": "EDR / Endpoint Control",
+            "directive": "Block binary execution by cryptographic hash across all enterprise endpoints",
+            "indicators": [
+                "SHA256:6cacae67425519253d7ed8115176f2abfa9ce716e1a0ba8c9e290c6b8d43408e",
+                "SHA1:5c643da1f6337f2cda372d0d370388a60fe2e546",
+                "MD5:b0e42ea3a16dc10ce6832e60f6ccf024"
+            ]
+        },
+        {
+            "action_type": "Network Firewalls / Proxy / DNS",
+            "directive": "Block egress traffic and sinkhole DNS requests to identified C2 infrastructure",
+            "indicators": [
+                "198.51.100.215",
+                "update-mirror.example.net",
+                "https://update-mirror.example.net/api/v1/checkin.jsp?host=lab01"
+            ]
+        },
+        {
+            "action_type": "Host Remediation & Threat Hunting",
+            "directive": "Scan active handles for behavioral mutex indicators (1 identified)",
+            "registry_keys": [],
+            "mutexes": [
+                "Local\\LinuxAgentTestMutex"
+            ]
+        }
+    ]
+}

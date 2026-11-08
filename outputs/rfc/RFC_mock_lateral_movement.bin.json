@@ -1,0 +1,65 @@
+{
+    "rfc_title": "SABRE Emergency Mitigation: Containment for Binary - mock_lateral_movement.bin",
+    "category": "Security Incident Response",
+    "priority": "P1 - Critical",
+    "justification": "SABRE static analysis signature extraction on mock_lateral_movement.bin (SHA256: 4c193b1985c32e2a..., Type: Windows PE32+ Executable, Entropy: 3.8369) identified 5 network indicator(s) and 6 host artifact(s).",
+    "binary_metadata": {
+        "filename": "mock_lateral_movement.bin",
+        "sha256": "4c193b1985c32e2ada9b9945b502b79ae2d26063b74786e8d63f12c2ef596a4a",
+        "sha1": "09f29795b00cc64527d5236374ecdb7a5042f89e",
+        "md5": "36772e4648d2409456c6a44068dd989c",
+        "size_bytes": 1030,
+        "file_type": "Windows PE32+ Executable",
+        "entropy": 3.8369,
+        "entropy_assessment": "Low (<6.0) - Text, Script, or Unpacked Data",
+        "pe_info": {
+            "architecture": "x64 (AMD64)",
+            "compile_timestamp_utc": "2024-11-07T17:20:00+00:00",
+            "is_dll": false,
+            "sections": [
+                {
+                    "name": ".rdata",
+                    "virtual_size": 662,
+                    "raw_size": 662,
+                    "entropy": 4.8333
+                }
+            ]
+        }
+    },
+    "requested_actions": [
+        {
+            "action_type": "EDR / Endpoint Control",
+            "directive": "Block binary execution by cryptographic hash across all enterprise endpoints",
+            "indicators": [
+                "SHA256:4c193b1985c32e2ada9b9945b502b79ae2d26063b74786e8d63f12c2ef596a4a",
+                "SHA1:09f29795b00cc64527d5236374ecdb7a5042f89e",
+                "MD5:36772e4648d2409456c6a44068dd989c"
+            ]
+        },
+        {
+            "action_type": "Network Firewalls / Proxy / DNS",
+            "directive": "Block egress traffic and sinkhole DNS requests to identified C2 infrastructure",
+            "indicators": [
+                "10.10.50.15",
+                "192.168.100.25",
+                "198.51.100.240",
+                "fileserver-pivot.lan",
+                "internal-dc01.corp"
+            ]
+        },
+        {
+            "action_type": "Host Remediation & Threat Hunting",
+            "directive": "Inspect endpoints for registry persistence keys (4 identified); Scan active handles for behavioral mutex indicators (2 identified)",
+            "registry_keys": [
+                "Software\\Microsoft\\Windows\\CurrentVersion\\Run\\MockLateralPivotAgent",
+                "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Terminal Server\\fDenyTSConnections",
+                "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\DisableRestrictedAdmin",
+                "HKLM\\SYSTEM\\CurrentControlSet\\Services\\PSEXESVC\\ImagePath"
+            ],
+            "mutexes": [
+                "Global\\MockPsExecLateralMutex",
+                "BaseNamedObjects\\MockWmiExecPipeMutex"
+            ]
+        }
+    ]
+}

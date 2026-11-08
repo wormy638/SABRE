@@ -1,0 +1,40 @@
+title: SABRE Persistence Detection for mock_malleable_c2_implant.dll
+id: 5bce249f-6e83-54a4-b654-1eaa8222f8a9
+status: experimental
+description: Automatically generated Sigma rule from SABRE static heuristic analysis of mock_malleable_c2_implant.dll (SHA256: 8a04e242fdf33ee6c14b5627ca111c050c77b07b4990f880e258d306f63b9eb2).
+author: SABRE (Static Artifact & Binary Rule Engine)
+date: 2026-11-08
+logsource:
+  category: registry_event
+  product: windows
+detection:
+  selection:
+    TargetObject|contains:
+      - 'HKCU\Software\Microsoft\Windows\CurrentVersion\Run\MockC2HeartbeatDll'
+      - 'HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings\ProxyServer'
+  condition: selection
+falsepositives:
+  - Authorized software installations
+level: high
+---
+title: SABRE Suspicious Binary Execution - mock_malleable_c2_implant.dll
+id: 76773345-c033-5e26-9457-31370711c003
+status: experimental
+description: Detects execution of binary mock_malleable_c2_implant.dll via cryptographic hashes extracted by SABRE. Observed Mutex(es): Global\MockMalleableC2Beacon_Mutex, Local\MockDnsTunnelSyncMutex.
+author: SABRE (Static Artifact & Binary Rule Engine)
+date: 2026-11-08
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_hashes:
+    Hashes|contains:
+      - 'SHA256=8a04e242fdf33ee6c14b5627ca111c050c77b07b4990f880e258d306f63b9eb2'
+      - 'MD5=6b3b616f68c30762d5dbf6395e096262'
+      - 'SHA1=26a895e768862cdcf52e839f359085f7580c3b6c'
+  selection_filename:
+    OriginalFileName: 'mock_malleable_c2_implant.dll'
+  condition: selection_hashes or selection_filename
+falsepositives:
+  - Unlikely for cryptographic hash match
+level: critical

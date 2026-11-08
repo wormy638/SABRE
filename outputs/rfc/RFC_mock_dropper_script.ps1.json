@@ -1,0 +1,46 @@
+{
+    "rfc_title": "SABRE Emergency Mitigation: Containment for Binary - mock_dropper_script.ps1",
+    "category": "Security Incident Response",
+    "priority": "P1 - Critical",
+    "justification": "SABRE static analysis signature extraction on mock_dropper_script.ps1 (SHA256: af9ef803a97d05fe..., Type: Executable Script, Entropy: 5.3327) identified 2 network indicator(s) and 2 host artifact(s).",
+    "binary_metadata": {
+        "filename": "mock_dropper_script.ps1",
+        "sha256": "af9ef803a97d05fee3d68d24d339fe0fb06642ef876663de437444e8291615c9",
+        "sha1": "97fae8996ef8f1656ad5423afe880f122e9cbba0",
+        "md5": "1c5f36bd77b8a04e8fb57ce080bbcfb4",
+        "size_bytes": 490,
+        "file_type": "Executable Script",
+        "entropy": 5.3327,
+        "entropy_assessment": "Low (<6.0) - Text, Script, or Unpacked Data",
+        "pe_info": null
+    },
+    "requested_actions": [
+        {
+            "action_type": "EDR / Endpoint Control",
+            "directive": "Block binary execution by cryptographic hash across all enterprise endpoints",
+            "indicators": [
+                "SHA256:af9ef803a97d05fee3d68d24d339fe0fb06642ef876663de437444e8291615c9",
+                "SHA1:97fae8996ef8f1656ad5423afe880f122e9cbba0",
+                "MD5:1c5f36bd77b8a04e8fb57ce080bbcfb4"
+            ]
+        },
+        {
+            "action_type": "Network Firewalls / Proxy / DNS",
+            "directive": "Block egress traffic and sinkhole DNS requests to identified C2 infrastructure",
+            "indicators": [
+                "203.0.113.199",
+                "dropper-sim.example.org"
+            ]
+        },
+        {
+            "action_type": "Host Remediation & Threat Hunting",
+            "directive": "Inspect endpoints for registry persistence keys (1 identified); Scan active handles for behavioral mutex indicators (1 identified)",
+            "registry_keys": [
+                "HKLM\\SYSTEM\\CurrentControlSet\\Services\\MockTestService\\ImagePath"
+            ],
+            "mutexes": [
+                "BaseNamedObjects\\MockDropperTestMutex"
+            ]
+        }
+    ]
+}

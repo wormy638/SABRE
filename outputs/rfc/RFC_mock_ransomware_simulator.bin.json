@@ -1,0 +1,65 @@
+{
+    "rfc_title": "SABRE Emergency Mitigation: Containment for Binary - mock_ransomware_simulator.bin",
+    "category": "Security Incident Response",
+    "priority": "P1 - Critical",
+    "justification": "SABRE static analysis signature extraction on mock_ransomware_simulator.bin (SHA256: 2489c223e89b0629..., Type: Windows PE32 Executable, Entropy: 4.1686) identified 6 network indicator(s) and 5 host artifact(s).",
+    "binary_metadata": {
+        "filename": "mock_ransomware_simulator.bin",
+        "sha256": "2489c223e89b062983ce763137ae3e5307edfd1d33a57eec3cc4ee89aca90848",
+        "sha1": "75f9cbb0fcbb27f497d39ecdc93a53a356e792d1",
+        "md5": "7a8743456c32335d83cade7a7802f5bb",
+        "size_bytes": 1123,
+        "file_type": "Windows PE32 Executable",
+        "entropy": 4.1686,
+        "entropy_assessment": "Low (<6.0) - Text, Script, or Unpacked Data",
+        "pe_info": {
+            "architecture": "x86 (I386)",
+            "compile_timestamp_utc": "2024-11-07T17:20:00+00:00",
+            "is_dll": false,
+            "sections": [
+                {
+                    "name": ".rdata",
+                    "virtual_size": 771,
+                    "raw_size": 771,
+                    "entropy": 5.0486
+                }
+            ]
+        }
+    },
+    "requested_actions": [
+        {
+            "action_type": "EDR / Endpoint Control",
+            "directive": "Block binary execution by cryptographic hash across all enterprise endpoints",
+            "indicators": [
+                "SHA256:2489c223e89b062983ce763137ae3e5307edfd1d33a57eec3cc4ee89aca90848",
+                "SHA1:75f9cbb0fcbb27f497d39ecdc93a53a356e792d1",
+                "MD5:7a8743456c32335d83cade7a7802f5bb"
+            ]
+        },
+        {
+            "action_type": "Network Firewalls / Proxy / DNS",
+            "directive": "Block egress traffic and sinkhole DNS requests to identified C2 infrastructure",
+            "indicators": [
+                "198.51.100.77",
+                "203.0.113.150",
+                "decrypt-portal.test",
+                "key-escrow-sim.example.com",
+                "http://decrypt-portal.test/status.php?key=test_only",
+                "https://key-escrow-sim.example.com/api/v2/register.php?victim_id=sim9001&enc=aes256"
+            ]
+        },
+        {
+            "action_type": "Host Remediation & Threat Hunting",
+            "directive": "Inspect endpoints for registry persistence keys (4 identified); Scan active handles for behavioral mutex indicators (1 identified)",
+            "registry_keys": [
+                "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce\\MockRansomNoteDisplay",
+                "HKLM\\SYSTEM\\CurrentControlSet\\Control\\SafeBoot\\Minimal\\MockRansomSvc",
+                "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\DisableAntiSpyware",
+                "HKCU\\Control Panel\\Desktop\\Wallpaper"
+            ],
+            "mutexes": [
+                "Global\\MockCryptLockerMutex_v4"
+            ]
+        }
+    ]
+}

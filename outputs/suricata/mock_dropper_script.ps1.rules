@@ -1,0 +1,33 @@
+alert http $HOME_NET any -> $EXTERNAL_NET any (
+    msg:"SABRE-CNC Suspected Static URI Indicator Match [mock_dropper_script.ps1]";
+    flow:established,to_server;
+    http.uri; content:"/stage2/config.dat?token=demo_test"; startswith;
+    classtype:trojan-activity;
+    reference:hashes,sha256:af9ef803a97d05fee3d68d24d339fe0fb06642ef876663de437444e8291615c9;
+    sid:9239160; rev:1;
+)
+
+alert dns $HOME_NET any -> any any (
+    msg:"SABRE-CNC Suspected Static DNS Query [mock_dropper_script.ps1 - dropper-sim.example.org]";
+    dns.query; content:"dropper-sim.example.org"; nocase; endswith;
+    classtype:trojan-activity;
+    reference:hashes,sha256:af9ef803a97d05fee3d68d24d339fe0fb06642ef876663de437444e8291615c9;
+    sid:9239161; rev:1;
+)
+
+alert tls $HOME_NET any -> $EXTERNAL_NET any (
+    msg:"SABRE-CNC Suspected Static TLS SNI [mock_dropper_script.ps1 - dropper-sim.example.org]";
+    flow:established,to_server;
+    tls.sni; content:"dropper-sim.example.org"; nocase; endswith;
+    classtype:trojan-activity;
+    reference:hashes,sha256:af9ef803a97d05fee3d68d24d339fe0fb06642ef876663de437444e8291615c9;
+    sid:9239162; rev:1;
+)
+
+alert ip $HOME_NET any -> 203.0.113.199 any (
+    msg:"SABRE-CNC Outbound Traffic to Extracted Static C2 IP [mock_dropper_script.ps1]";
+    flow:to_server;
+    classtype:trojan-activity;
+    reference:hashes,sha256:af9ef803a97d05fee3d68d24d339fe0fb06642ef876663de437444e8291615c9;
+    sid:9239163; rev:1;
+)

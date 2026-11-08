@@ -1,0 +1,59 @@
+alert http $HOME_NET any -> $EXTERNAL_NET any (
+    msg:"SABRE-CNC Suspected Static URI Indicator Match [mock_ransomware_simulator.bin]";
+    flow:established,to_server;
+    http.uri; content:"/api/v2/register.php?victim_id=sim9001&enc=aes256"; startswith;
+    classtype:trojan-activity;
+    reference:hashes,sha256:2489c223e89b062983ce763137ae3e5307edfd1d33a57eec3cc4ee89aca90848;
+    sid:9316280; rev:1;
+)
+
+alert http $HOME_NET any -> $EXTERNAL_NET any (
+    msg:"SABRE-CNC Suspected Static URI Indicator Match [mock_ransomware_simulator.bin]";
+    flow:established,to_server;
+    http.uri; content:"/status.php?key=test_only"; startswith;
+    classtype:trojan-activity;
+    reference:hashes,sha256:2489c223e89b062983ce763137ae3e5307edfd1d33a57eec3cc4ee89aca90848;
+    sid:9316281; rev:1;
+)
+
+alert dns $HOME_NET any -> any any (
+    msg:"SABRE-CNC Suspected Static DNS Query [mock_ransomware_simulator.bin - decrypt-portal.test]";
+    dns.query; content:"decrypt-portal.test"; nocase; endswith;
+    classtype:trojan-activity;
+    reference:hashes,sha256:2489c223e89b062983ce763137ae3e5307edfd1d33a57eec3cc4ee89aca90848;
+    sid:9316282; rev:1;
+)
+
+alert tls $HOME_NET any -> $EXTERNAL_NET any (
+    msg:"SABRE-CNC Suspected Static TLS SNI [mock_ransomware_simulator.bin - decrypt-portal.test]";
+    flow:established,to_server;
+    tls.sni; content:"decrypt-portal.test"; nocase; endswith;
+    classtype:trojan-activity;
+    reference:hashes,sha256:2489c223e89b062983ce763137ae3e5307edfd1d33a57eec3cc4ee89aca90848;
+    sid:9316283; rev:1;
+)
+
+alert dns $HOME_NET any -> any any (
+    msg:"SABRE-CNC Suspected Static DNS Query [mock_ransomware_simulator.bin - key-escrow-sim.example.com]";
+    dns.query; content:"key-escrow-sim.example.com"; nocase; endswith;
+    classtype:trojan-activity;
+    reference:hashes,sha256:2489c223e89b062983ce763137ae3e5307edfd1d33a57eec3cc4ee89aca90848;
+    sid:9316284; rev:1;
+)
+
+alert tls $HOME_NET any -> $EXTERNAL_NET any (
+    msg:"SABRE-CNC Suspected Static TLS SNI [mock_ransomware_simulator.bin - key-escrow-sim.example.com]";
+    flow:established,to_server;
+    tls.sni; content:"key-escrow-sim.example.com"; nocase; endswith;
+    classtype:trojan-activity;
+    reference:hashes,sha256:2489c223e89b062983ce763137ae3e5307edfd1d33a57eec3cc4ee89aca90848;
+    sid:9316285; rev:1;
+)
+
+alert ip $HOME_NET any -> [198.51.100.77,203.0.113.150] any (
+    msg:"SABRE-CNC Outbound Traffic to Extracted Static C2 IP [mock_ransomware_simulator.bin]";
+    flow:to_server;
+    classtype:trojan-activity;
+    reference:hashes,sha256:2489c223e89b062983ce763137ae3e5307edfd1d33a57eec3cc4ee89aca90848;
+    sid:9316286; rev:1;
+)

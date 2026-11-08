@@ -1,0 +1,42 @@
+alert http $HOME_NET any -> $EXTERNAL_NET any (
+    msg:"SABRE-CNC Suspected Static URI Indicator Match [mock_linux_agent.elf]";
+    flow:established,to_server;
+    http.uri; content:"/api/v1/checkin.jsp?host=lab01"; startswith;
+    classtype:trojan-activity;
+    reference:hashes,sha256:6cacae67425519253d7ed8115176f2abfa9ce716e1a0ba8c9e290c6b8d43408e;
+    sid:9246680; rev:1;
+)
+
+alert http $HOME_NET any -> $EXTERNAL_NET any (
+    msg:"SABRE-CNC Suspected Static URI Indicator Match [mock_linux_agent.elf]";
+    flow:established,to_server;
+    http.uri; content:"/var/tmp/stage_check.sh"; startswith;
+    classtype:trojan-activity;
+    reference:hashes,sha256:6cacae67425519253d7ed8115176f2abfa9ce716e1a0ba8c9e290c6b8d43408e;
+    sid:9246681; rev:1;
+)
+
+alert dns $HOME_NET any -> any any (
+    msg:"SABRE-CNC Suspected Static DNS Query [mock_linux_agent.elf - update-mirror.example.net]";
+    dns.query; content:"update-mirror.example.net"; nocase; endswith;
+    classtype:trojan-activity;
+    reference:hashes,sha256:6cacae67425519253d7ed8115176f2abfa9ce716e1a0ba8c9e290c6b8d43408e;
+    sid:9246682; rev:1;
+)
+
+alert tls $HOME_NET any -> $EXTERNAL_NET any (
+    msg:"SABRE-CNC Suspected Static TLS SNI [mock_linux_agent.elf - update-mirror.example.net]";
+    flow:established,to_server;
+    tls.sni; content:"update-mirror.example.net"; nocase; endswith;
+    classtype:trojan-activity;
+    reference:hashes,sha256:6cacae67425519253d7ed8115176f2abfa9ce716e1a0ba8c9e290c6b8d43408e;
+    sid:9246683; rev:1;
+)
+
+alert ip $HOME_NET any -> 198.51.100.215 any (
+    msg:"SABRE-CNC Outbound Traffic to Extracted Static C2 IP [mock_linux_agent.elf]";
+    flow:to_server;
+    classtype:trojan-activity;
+    reference:hashes,sha256:6cacae67425519253d7ed8115176f2abfa9ce716e1a0ba8c9e290c6b8d43408e;
+    sid:9246684; rev:1;
+)

@@ -1,0 +1,64 @@
+{
+    "rfc_title": "SABRE Emergency Mitigation: Containment for Binary - mock_lotl_privesc.bin",
+    "category": "Security Incident Response",
+    "priority": "P1 - Critical",
+    "justification": "SABRE static analysis signature extraction on mock_lotl_privesc.bin (SHA256: 89d2f390fca8f98d..., Type: Windows PE32+ Executable, Entropy: 3.8738) identified 3 network indicator(s) and 7 host artifact(s).",
+    "binary_metadata": {
+        "filename": "mock_lotl_privesc.bin",
+        "sha256": "89d2f390fca8f98df0066d9ae2e6c243d6f901b06ab1a7111b596bc924a3caa8",
+        "sha1": "b032395e764895c32d8d1ae02c4e93a02dcbf975",
+        "md5": "b19d7e799fda7989dbdcaf03d49a4864",
+        "size_bytes": 1149,
+        "file_type": "Windows PE32+ Executable",
+        "entropy": 3.8738,
+        "entropy_assessment": "Low (<6.0) - Text, Script, or Unpacked Data",
+        "pe_info": {
+            "architecture": "x64 (AMD64)",
+            "compile_timestamp_utc": "2024-11-07T17:20:00+00:00",
+            "is_dll": false,
+            "sections": [
+                {
+                    "name": ".rdata",
+                    "virtual_size": 781,
+                    "raw_size": 781,
+                    "entropy": 4.7035
+                }
+            ]
+        }
+    },
+    "requested_actions": [
+        {
+            "action_type": "EDR / Endpoint Control",
+            "directive": "Block binary execution by cryptographic hash across all enterprise endpoints",
+            "indicators": [
+                "SHA256:89d2f390fca8f98df0066d9ae2e6c243d6f901b06ab1a7111b596bc924a3caa8",
+                "SHA1:b032395e764895c32d8d1ae02c4e93a02dcbf975",
+                "MD5:b19d7e799fda7989dbdcaf03d49a4864"
+            ]
+        },
+        {
+            "action_type": "Network Firewalls / Proxy / DNS",
+            "directive": "Block egress traffic and sinkhole DNS requests to identified C2 infrastructure",
+            "indicators": [
+                "198.51.100.112",
+                "lotl-stage.example.org",
+                "https://lotl-stage.example.org/payloads/elevate.ps1?method=fodhelper"
+            ]
+        },
+        {
+            "action_type": "Host Remediation & Threat Hunting",
+            "directive": "Inspect endpoints for registry persistence keys (6 identified); Scan active handles for behavioral mutex indicators (1 identified)",
+            "registry_keys": [
+                "HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\sethc.exe",
+                "HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion\\SilentProcessExit\\svchost.exe",
+                "Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\EnableLUA",
+                "HKLM\\SYSTEM\\CurrentControlSet\\Services\\MockPrivEscSvc\\Parameters",
+                "HKCU\\Software\\Classes\\ms-settings\\Shell\\Open\\command",
+                "HKCU\\Software\\Classes\\mscfile\\shell\\open\\command"
+            ],
+            "mutexes": [
+                "Local\\MockElevationBypassMutex"
+            ]
+        }
+    ]
+}

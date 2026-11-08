@@ -1,0 +1,44 @@
+title: SABRE Persistence Detection for mock_lotl_privesc.bin
+id: db40f6e4-f1fe-5d13-8f8f-775a3e4407b1
+status: experimental
+description: Automatically generated Sigma rule from SABRE static heuristic analysis of mock_lotl_privesc.bin (SHA256: 89d2f390fca8f98df0066d9ae2e6c243d6f901b06ab1a7111b596bc924a3caa8).
+author: SABRE (Static Artifact & Binary Rule Engine)
+date: 2026-11-08
+logsource:
+  category: registry_event
+  product: windows
+detection:
+  selection:
+    TargetObject|contains:
+      - 'HKLM\Software\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\sethc.exe'
+      - 'HKLM\Software\Microsoft\Windows NT\CurrentVersion\SilentProcessExit\svchost.exe'
+      - 'Software\Microsoft\Windows\CurrentVersion\Policies\System\EnableLUA'
+      - 'HKLM\SYSTEM\CurrentControlSet\Services\MockPrivEscSvc\Parameters'
+      - 'HKCU\Software\Classes\ms-settings\Shell\Open\command'
+      - 'HKCU\Software\Classes\mscfile\shell\open\command'
+  condition: selection
+falsepositives:
+  - Authorized software installations
+level: high
+---
+title: SABRE Suspicious Binary Execution - mock_lotl_privesc.bin
+id: 97e615c8-2b97-51e1-8516-a222cc6a6a54
+status: experimental
+description: Detects execution of binary mock_lotl_privesc.bin via cryptographic hashes extracted by SABRE. Observed Mutex(es): Local\MockElevationBypassMutex.
+author: SABRE (Static Artifact & Binary Rule Engine)
+date: 2026-11-08
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_hashes:
+    Hashes|contains:
+      - 'SHA256=89d2f390fca8f98df0066d9ae2e6c243d6f901b06ab1a7111b596bc924a3caa8'
+      - 'MD5=b19d7e799fda7989dbdcaf03d49a4864'
+      - 'SHA1=b032395e764895c32d8d1ae02c4e93a02dcbf975'
+  selection_filename:
+    OriginalFileName: 'mock_lotl_privesc.bin'
+  condition: selection_hashes or selection_filename
+falsepositives:
+  - Unlikely for cryptographic hash match
+level: critical

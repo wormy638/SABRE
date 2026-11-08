@@ -1,0 +1,21 @@
+title: SABRE Suspicious Binary Execution - mock_linux_agent.elf
+id: ad01debc-6cb3-525f-869d-e5843b54a29a
+status: experimental
+description: Detects execution of binary mock_linux_agent.elf via cryptographic hashes extracted by SABRE. Observed Mutex(es): Local\LinuxAgentTestMutex.
+author: SABRE (Static Artifact & Binary Rule Engine)
+date: 2026-11-08
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_hashes:
+    Hashes|contains:
+      - 'SHA256=6cacae67425519253d7ed8115176f2abfa9ce716e1a0ba8c9e290c6b8d43408e'
+      - 'MD5=b0e42ea3a16dc10ce6832e60f6ccf024'
+      - 'SHA1=5c643da1f6337f2cda372d0d370388a60fe2e546'
+  selection_filename:
+    OriginalFileName: 'mock_linux_agent.elf'
+  condition: selection_hashes or selection_filename
+falsepositives:
+  - Unlikely for cryptographic hash match
+level: critical

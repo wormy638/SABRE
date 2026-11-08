@@ -1,0 +1,50 @@
+alert http $HOME_NET any -> $EXTERNAL_NET any (
+    msg:"SABRE-CNC Suspected Static URI Indicator Match [mock_beacon_x64.bin]";
+    flow:established,to_server;
+    http.uri; content:"/gate.php?id=test101|3b|mode=sync"; startswith;
+    classtype:trojan-activity;
+    reference:hashes,sha256:2f83df153e30a2f4c5f194bd090584ca4aee4a70b31cde1d0e963a307735d1d3;
+    sid:9859080; rev:1;
+)
+
+alert dns $HOME_NET any -> any any (
+    msg:"SABRE-CNC Suspected Static DNS Query [mock_beacon_x64.bin - beacon-node.test]";
+    dns.query; content:"beacon-node.test"; nocase; endswith;
+    classtype:trojan-activity;
+    reference:hashes,sha256:2f83df153e30a2f4c5f194bd090584ca4aee4a70b31cde1d0e963a307735d1d3;
+    sid:9859081; rev:1;
+)
+
+alert tls $HOME_NET any -> $EXTERNAL_NET any (
+    msg:"SABRE-CNC Suspected Static TLS SNI [mock_beacon_x64.bin - beacon-node.test]";
+    flow:established,to_server;
+    tls.sni; content:"beacon-node.test"; nocase; endswith;
+    classtype:trojan-activity;
+    reference:hashes,sha256:2f83df153e30a2f4c5f194bd090584ca4aee4a70b31cde1d0e963a307735d1d3;
+    sid:9859082; rev:1;
+)
+
+alert dns $HOME_NET any -> any any (
+    msg:"SABRE-CNC Suspected Static DNS Query [mock_beacon_x64.bin - c2-telemetry.example.com]";
+    dns.query; content:"c2-telemetry.example.com"; nocase; endswith;
+    classtype:trojan-activity;
+    reference:hashes,sha256:2f83df153e30a2f4c5f194bd090584ca4aee4a70b31cde1d0e963a307735d1d3;
+    sid:9859083; rev:1;
+)
+
+alert tls $HOME_NET any -> $EXTERNAL_NET any (
+    msg:"SABRE-CNC Suspected Static TLS SNI [mock_beacon_x64.bin - c2-telemetry.example.com]";
+    flow:established,to_server;
+    tls.sni; content:"c2-telemetry.example.com"; nocase; endswith;
+    classtype:trojan-activity;
+    reference:hashes,sha256:2f83df153e30a2f4c5f194bd090584ca4aee4a70b31cde1d0e963a307735d1d3;
+    sid:9859084; rev:1;
+)
+
+alert ip $HOME_NET any -> [198.51.100.42,203.0.113.88] any (
+    msg:"SABRE-CNC Outbound Traffic to Extracted Static C2 IP [mock_beacon_x64.bin]";
+    flow:to_server;
+    classtype:trojan-activity;
+    reference:hashes,sha256:2f83df153e30a2f4c5f194bd090584ca4aee4a70b31cde1d0e963a307735d1d3;
+    sid:9859085; rev:1;
+)

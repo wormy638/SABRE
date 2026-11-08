@@ -1,0 +1,21 @@
+title: SABRE Suspicious Binary Execution - benign_utility_control.bin
+id: 5facb0d4-0ba6-531e-9e1a-829e5c2d04a5
+status: experimental
+description: Detects execution of binary benign_utility_control.bin via cryptographic hashes extracted by SABRE.
+author: SABRE (Static Artifact & Binary Rule Engine)
+date: 2026-11-08
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_hashes:
+    Hashes|contains:
+      - 'SHA256=951fb822a5664a27821465369f4c387442c84815831018209055cb2ddb10d9ee'
+      - 'MD5=bef73f063ab20a8ef28a1493748690f4'
+      - 'SHA1=1cd928a894a8c2b644f0b3e9a3bf3ec9027ce35c'
+  selection_filename:
+    OriginalFileName: 'benign_utility_control.bin'
+  condition: selection_hashes or selection_filename
+falsepositives:
+  - Unlikely for cryptographic hash match
+level: critical

@@ -1,0 +1,42 @@
+title: SABRE Persistence Detection for mock_ransomware_simulator.bin
+id: 6c2a85f5-664c-5195-9ecf-348d815f5d55
+status: experimental
+description: Automatically generated Sigma rule from SABRE static heuristic analysis of mock_ransomware_simulator.bin (SHA256: 2489c223e89b062983ce763137ae3e5307edfd1d33a57eec3cc4ee89aca90848).
+author: SABRE (Static Artifact & Binary Rule Engine)
+date: 2026-11-08
+logsource:
+  category: registry_event
+  product: windows
+detection:
+  selection:
+    TargetObject|contains:
+      - 'HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce\MockRansomNoteDisplay'
+      - 'HKLM\SYSTEM\CurrentControlSet\Control\SafeBoot\Minimal\MockRansomSvc'
+      - 'HKLM\Software\Policies\Microsoft\Windows Defender\DisableAntiSpyware'
+      - 'HKCU\Control Panel\Desktop\Wallpaper'
+  condition: selection
+falsepositives:
+  - Authorized software installations
+level: high
+---
+title: SABRE Suspicious Binary Execution - mock_ransomware_simulator.bin
+id: ba753133-ec63-5d07-8b58-228590a2c6f8
+status: experimental
+description: Detects execution of binary mock_ransomware_simulator.bin via cryptographic hashes extracted by SABRE. Observed Mutex(es): Global\MockCryptLockerMutex_v4.
+author: SABRE (Static Artifact & Binary Rule Engine)
+date: 2026-11-08
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_hashes:
+    Hashes|contains:
+      - 'SHA256=2489c223e89b062983ce763137ae3e5307edfd1d33a57eec3cc4ee89aca90848'
+      - 'MD5=7a8743456c32335d83cade7a7802f5bb'
+      - 'SHA1=75f9cbb0fcbb27f497d39ecdc93a53a356e792d1'
+  selection_filename:
+    OriginalFileName: 'mock_ransomware_simulator.bin'
+  condition: selection_hashes or selection_filename
+falsepositives:
+  - Unlikely for cryptographic hash match
+level: critical

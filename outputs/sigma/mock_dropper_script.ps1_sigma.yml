@@ -1,0 +1,39 @@
+title: SABRE Persistence Detection for mock_dropper_script.ps1
+id: 83382749-92cc-5acd-b80b-93ae572c6e5e
+status: experimental
+description: Automatically generated Sigma rule from SABRE static heuristic analysis of mock_dropper_script.ps1 (SHA256: af9ef803a97d05fee3d68d24d339fe0fb06642ef876663de437444e8291615c9).
+author: SABRE (Static Artifact & Binary Rule Engine)
+date: 2026-11-08
+logsource:
+  category: registry_event
+  product: windows
+detection:
+  selection:
+    TargetObject|contains:
+      - 'HKLM\SYSTEM\CurrentControlSet\Services\MockTestService\ImagePath'
+  condition: selection
+falsepositives:
+  - Authorized software installations
+level: high
+---
+title: SABRE Suspicious Binary Execution - mock_dropper_script.ps1
+id: 3de668dc-d7c9-5772-8dd6-220f904082af
+status: experimental
+description: Detects execution of binary mock_dropper_script.ps1 via cryptographic hashes extracted by SABRE. Observed Mutex(es): BaseNamedObjects\MockDropperTestMutex.
+author: SABRE (Static Artifact & Binary Rule Engine)
+date: 2026-11-08
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_hashes:
+    Hashes|contains:
+      - 'SHA256=af9ef803a97d05fee3d68d24d339fe0fb06642ef876663de437444e8291615c9'
+      - 'MD5=1c5f36bd77b8a04e8fb57ce080bbcfb4'
+      - 'SHA1=97fae8996ef8f1656ad5423afe880f122e9cbba0'
+  selection_filename:
+    OriginalFileName: 'mock_dropper_script.ps1'
+  condition: selection_hashes or selection_filename
+falsepositives:
+  - Unlikely for cryptographic hash match
+level: critical
